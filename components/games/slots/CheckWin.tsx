@@ -1,25 +1,4 @@
-// components/games/slots/checkwin.tsx
-import React from 'react';
-
-type Settings = {
-  sounds: string;
-  closeModalKey: string;
-  spinKey: string;
-};
-
-interface CheckWinProps {
-  newReels: number[][];
-  setOutcome: React.Dispatch<React.SetStateAction<'win' | 'loss' | null>>;
-  setCoins: React.Dispatch<React.SetStateAction<number>>;
-  bet: number;
-  setWinningPositions: React.Dispatch<React.SetStateAction<number[][] | null>>;
-  settings: Settings;
-  winnerAudio: HTMLAudioElement | null;
-  spinningAudio: HTMLAudioElement | null;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  updateCoinsInFirebase: (newCoins: number) => void;
-  setWinningAmount: React.Dispatch<React.SetStateAction<number | null>>;
-}
+import { CheckWinProps } from "./SlotTypes";
 
 export const checkWin = ({
   newReels,
@@ -31,15 +10,14 @@ export const checkWin = ({
   settings,
   winnerAudio,
   spinningAudio,
-  setShowModal,
   updateCoinsInFirebase,
 }: CheckWinProps) => {
   let win = false;
   let newWinningPositions = Array.from({ length: 3 }, () =>
-    Array(3).fill(false)
+    Array(3).fill(false),
   );
 
-  // Horizontal Lines
+  // Check for Horizontal Lines
   for (let i = 0; i < 3; i++) {
     if (
       newReels[i][0] === newReels[i][1] &&
@@ -51,7 +29,7 @@ export const checkWin = ({
     }
   }
 
-  // Vertical Lines
+  // Check for Vertical Lines
   if (!win) {
     for (let i = 0; i < 3; i++) {
       if (
@@ -67,7 +45,7 @@ export const checkWin = ({
     }
   }
 
-  // Diagonals
+  // Check for Diagonals
   if (!win) {
     if (
       newReels[0][0] === newReels[1][1] &&
@@ -97,26 +75,36 @@ export const checkWin = ({
     winningAmount = 10 * bet;
     setWinningAmount(winningAmount);
     setOutcome("win");
-    setShowModal(true);
-    setCoins((prevCoins: number) => {
-      const newCoins = prevCoins + winningAmount;
-      updateCoinsInFirebase(newCoins);
-      return newCoins;
+
+    setCoins((prevCoins) => {
+      if (prevCoins !== null) {
+        const newCoins = prevCoins + winningAmount;
+        updateCoinsInFirebase(newCoins);
+        return newCoins;
+      }
+      return prevCoins;
     });
+
     setWinningPositions(newWinningPositions);
+
     if (settings.sounds === "on" || settings.sounds === "win only") {
       winnerAudio?.play();
     }
   } else {
     setWinningAmount(null);
     setOutcome("loss");
-    setShowModal(true);
-    setCoins((prevCoins: number) => {
-      const newCoins = prevCoins - bet;
-      updateCoinsInFirebase(newCoins);
-      return newCoins;
+
+    setCoins((prevCoins) => {
+      if (prevCoins !== null) {
+        const newCoins = prevCoins - bet;
+        updateCoinsInFirebase(newCoins);
+        return newCoins;
+      }
+      return prevCoins;
     });
+
     setWinningPositions(null);
+
     if (settings.sounds === "on") {
       spinningAudio?.pause();
     }

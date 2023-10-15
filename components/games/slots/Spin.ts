@@ -1,15 +1,4 @@
-// components/games/slots/spin.ts
-import { useAnimation } from "framer-motion";
-import React from "react";
-
-interface SpinProps {
-  setIsSpinning: React.Dispatch<React.SetStateAction<boolean>>;
-  reelControls: ReturnType<typeof useAnimation>[];
-  setReels: React.Dispatch<React.SetStateAction<number[][]>>;
-  settings: { sounds: string };
-  spinningAudio: HTMLAudioElement | null;
-  checkWin: (newReels: number[][]) => void;
-}
+import { SpinProps } from "./SlotTypes.d";
 
 export const spin = async ({
   setIsSpinning,
@@ -21,7 +10,6 @@ export const spin = async ({
 }: SpinProps) => {
   setIsSpinning(true);
 
-  // Reset and play the spinning audio
   if (spinningAudio && settings.sounds === "on") {
     spinningAudio.currentTime = 0;
     spinningAudio.play();
@@ -32,7 +20,7 @@ export const spin = async ({
     const reelControl = reelControls[i];
     const newRow = Array.from(
       { length: 9 },
-      () => Math.floor(Math.random() * 9) + 1
+      () => Math.floor(Math.random() * 9) + 1,
     );
     newReels.push(newRow);
 
@@ -45,7 +33,6 @@ export const spin = async ({
   await Promise.all(reelControls.map((control) => control.stop));
   setReels(newReels);
 
-  // Delay win message and sound
   setTimeout(() => {
     checkWin(newReels);
     setIsSpinning(false);

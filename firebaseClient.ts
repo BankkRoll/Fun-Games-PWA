@@ -7,11 +7,11 @@ const firebaseConfig = {
   projectId: "pwaa-7e559",
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 let app: FirebaseApp | undefined;
-let db: any; 
+let db: any;
 
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
@@ -21,4 +21,4 @@ if (app) {
   db = getFirestore(app);
 }
 
-export { db }; 
+export { db };

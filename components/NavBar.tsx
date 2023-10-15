@@ -16,9 +16,9 @@ export default function Navbar() {
   useEffect(() => {
     if (address && db) {
       const checkOrCreateUser = async () => {
-        const userRef = doc(db, 'users', address);
+        const userRef = doc(db, "users", address);
         const userSnap = await getDoc(userRef);
-  
+
         if (userSnap.exists()) {
           console.log("User exists:", userSnap.data());
         } else {
@@ -33,11 +33,10 @@ export default function Navbar() {
           console.log("New user created");
         }
       };
-  
+
       checkOrCreateUser();
     }
   }, [address, db]);
-  
 
   return (
     <div className="flex justify-between items-center p-4 fixed bottom-0 left-0 right-0 bg-background dark:bg-gray-900">
