@@ -108,6 +108,9 @@ export const SlotMachine: React.FC = () => {
         {/* Controls and Information */}
         <div className="mb-4 p-4 rounded-lg bg-card text-foreground">
           <h1 className="text-2xl font-bold mb-4 text-center">Slot Machine</h1>
+
+
+          {address ? (
           <div className="flex items-center justify-between">
             <div>
               <p className="font-semibold text-foreground">Coins: {coins ?? 'Loading...'}</p>
@@ -123,7 +126,7 @@ export const SlotMachine: React.FC = () => {
                 />
               </div>
             </div>
-            <button
+          <button
               className={`${
                 coins !== null && coins >= bet && !isSpinning ? "bg-primary text-secondary" : "bg-muted "
               }  p-2 rounded text-primary`}
@@ -133,6 +136,11 @@ export const SlotMachine: React.FC = () => {
               Spin
             </button>
           </div>
+          ) : (
+            <div className="text-center text-2xl font-bold">
+                Please sign in to play.
+            </div>
+          )}
         </div>
   
         {/* Reels Layer */}

@@ -76,10 +76,12 @@ export default function Navbar() {
                   borderRadius: "50% !important",
                 }}
               >
-                <PersonIcon className="-z-50 w-12 h-12 text-foreground dark:text-white absolute bottom-0" />
+                <PersonIcon className="-z-50 w-12 h-12 text-foreground absolute bottom-0" />
                 <ConnectWallet
                   btnTitle=". . ."
-                  className=" bg-transparent dark:bg-transparent text-primary-foreground dark:text-secondary-foreground"
+                  style={{
+                    backgroundColor: "transparent",
+                  }}
                 />
               </div>
             </div>

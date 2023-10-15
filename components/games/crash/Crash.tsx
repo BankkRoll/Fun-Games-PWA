@@ -2,20 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseClient';
 import { useAddress } from '@thirdweb-dev/react';
-import OutcomeModal from '../ResultsModal';
 import CrashChart from './CrashChart';
 import { Button } from '../../ui/button';
+import { useToast } from '../../ui/use-toast';
 
 export const Crash: React.FC = () => {
   const address = useAddress();
+  const { toast } = useToast();
   const [coins, setCoins] = useState<number | null>(null);
   const [bet, setBet] = useState(5);
   const [multiplier, setMultiplier] = useState(1);
   const [outcome, setOutcome] = useState<'win' | 'loss' | null>(null);
-  const [showModal, setShowModal] = useState(false);
   const [isCrashed, setIsCrashed] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [winningAmount, setWinningAmount] = useState<number | null>(null);
+  const [cashOutMultiplier, setCashOutMultiplier] = useState<number | null>(null);
+  const [hasCashedOut, setHasCashedOut] = useState(false);
 
   const handleBetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newBet = Number(e.target.value);
@@ -25,14 +27,13 @@ export const Crash: React.FC = () => {
   };
 
   const cashOut = () => {
+    if (hasCashedOut) return;
+    setHasCashedOut(true);
     const calculatedWinningAmount = bet * multiplier;
+    setCashOutMultiplier(multiplier);
     setWinningAmount(calculatedWinningAmount);
     setCoins((prev) => (prev ? prev + calculatedWinningAmount : null));
-    setIsStarted(false);
-    setMultiplier(1);
-    setIsCrashed(false);
     setOutcome('win');
-    setShowModal(true);
     if (address) {
       const userRef = doc(db, 'users', address);
       updateDoc(userRef, { coinBalance: coins });
@@ -54,8 +55,10 @@ export const Crash: React.FC = () => {
 
   const startGame = () => {
     setIsStarted(true);
+    setHasCashedOut(false);
     setIsCrashed(false);
     setMultiplier(1);
+    setCashOutMultiplier(null);
   };
 
   useEffect(() => {
@@ -65,8 +68,8 @@ export const Crash: React.FC = () => {
       interval = setInterval(() => {
         setMultiplier((prev) => prev + 0.01);
       }, 100);
-  
-      const crashTime = Math.random() * 59000 + 1000; // Random time between 1 second and 1 minute
+
+      const crashTime = Math.random() * 59000 + 1000;
 
       setTimeout(() => {
         clearInterval(interval);
@@ -74,7 +77,6 @@ export const Crash: React.FC = () => {
         setIsStarted(false);
         setMultiplier(1);
         setOutcome('loss');
-        setShowModal(true);
         setCoins((prev) => (prev ? prev - bet : null));
         if (address) {
           const userRef = doc(db, 'users', address);
@@ -88,18 +90,25 @@ export const Crash: React.FC = () => {
     };
   }, [isStarted]);
 
+  useEffect(() => {
+    if (outcome) {
+      const title = outcome === 'win' ? 'Congratulations!' : 'Game Over';
+      const description = outcome === 'win'
+        ? `You've won ${winningAmount} coins!`
+        : 'You lost. Better luck next time.';
+
+      toast({
+        title,
+        description,
+      });
+    }
+  }, [outcome]);
+
   return (
-    <>
-      <OutcomeModal
-        show={showModal}
-        outcome={outcome ?? 'loss'}
-        onClose={() => setShowModal(false)}
-        winningAmount={winningAmount}
-        closeModalKey={"Escape"}
-      />
-      <div className="h-full flex flex-col items-center justify-center bg-background text-foreground">
-        <div className="mb-4 p-4 rounded-lg bg-card text-foreground">
-          <h1 className="text-2xl font-bold mb-4 text-center">Crash Game</h1>
+    <div className="h-full flex flex-col items-center justify-center bg-background text-foreground">
+      <div className="mb-4 p-4 rounded-lg bg-card text-foreground">
+        <h1 className="text-2xl font-bold mb-4 text-center">Crash Game</h1>
+        {address ? (
           <div className="flex items-center justify-between">
             <div>
               <p className="font-semibold text-foreground">Coins: {coins ?? 'Loading...'}</p>
@@ -124,16 +133,20 @@ export const Crash: React.FC = () => {
               </Button>
               <Button
                 onClick={cashOut}
-                disabled={!isStarted || isCrashed}
+                disabled={!isStarted || isCrashed || hasCashedOut}
               >
                 Cash Out
               </Button>
             </div>
           </div>
-        </div>
-        <CrashChart multiplier={multiplier} isCrashed={isCrashed} />
+        ) : (
+          <div className="text-center text-2xl font-bold">
+            Please sign in to play.
+          </div>
+        )}
       </div>
-    </>
+      <CrashChart multiplier={multiplier} isCrashed={isCrashed} cashOutMultiplier={cashOutMultiplier} />
+    </div>
   );
 };
 
