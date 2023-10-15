@@ -32,15 +32,16 @@ const Home: NextPage = () => {
             <p className="text-lg">
               This app is in the early stages of development. Heres what you can
               expect:
-              <ul className="list-inside list-disc">
+            </p>
+            <ul className="list-inside list-disc">
                 <li>- Possible bugs and glitches</li>
                 <li>- New features released regularly</li>
+                <li>- Community involvement in feature planning</li>
                 <li>
                   - We appreciate your understanding and patience as we work to
                   improve your gaming experience.
                 </li>
               </ul>
-            </p>
           </GlowCardContent>
         </GlowCard>
 
@@ -51,14 +52,13 @@ const Home: NextPage = () => {
           <GlowCardContent>
             <p className="text-lg">
               Wondering what kinds of games you can play? Heres a sneak peek:
-              <ul className="list-inside list-disc">
+            </p>
+            <ul className="list-inside list-disc">
                 <li>- Arcade games</li>
-                <li>- Arcade classics</li>
                 <li>- Puzzle games</li>
                 <li>- Strategy games</li>
                 <li>- And much more!</li>
               </ul>
-            </p>
           </GlowCardContent>
         </GlowCard>
 
@@ -69,13 +69,13 @@ const Home: NextPage = () => {
           <GlowCardContent>
             <p className="text-lg">
               Ready to level up your gaming? With our in-game currency, you can:
-              <ul className="list-inside list-disc">
+            </p>
+            <ul className="list-inside list-disc">
                 <li>- Play Games</li>
                 <li>- REDACTED</li>
                 <li>- REDACTED</li>
                 <li>- REDACTED</li>
               </ul>
-            </p>
           </GlowCardContent>
         </GlowCard>
 
@@ -86,13 +86,13 @@ const Home: NextPage = () => {
           <GlowCardContent>
             <p className="text-lg">
               Please note the following:
-              <ul className="list-inside list-disc">
+            </p>
+            <ul className="list-inside list-disc">
                 <li>- All in-game purchases are final.</li>
                 <li>- Coins have no real-world value.</li>
                 <li>- Terms and conditions apply.</li>
                 <li>- Play responsibly.</li>
               </ul>
-            </p>
           </GlowCardContent>
         </GlowCard>
       </div>
@@ -101,3 +101,4 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
